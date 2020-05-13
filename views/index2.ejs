@@ -1,0 +1,42 @@
+<html>
+    <head>
+       <style>
+       #tmpValue{
+           font-size: 50px;
+       }
+       #hmdValue{
+           font-size: 50px;
+       }
+       #deviceId{
+           font-size: 30px;
+           color: chocolate;
+       }
+       #tmpLabel{
+           font-size: 50px;
+           color: chocolate;
+       }
+       </style>
+    </head>
+    <body>
+        <label id="tmpLabel">Temperature Value </label>  <label id="tmpValue"></label>
+        <br>
+        <label id="tmpLabel">Humidity Value </label>  <label id="hmdValue">40</label>
+        <br>
+        <br>
+            <h1 style="display:inline;">Device id: </h1>  <label id="deviceId">----</label>
+            <h1>Device name: </h1>
+        <h1>[temperatura <%=tmp%>] </h1>
+        <br>
+    
+         
+            <input id="topicValue" type="text" placeholder="type device topic to send a value"/>
+            <button id="onLed" onclick="onLed()">on Led</button>
+            <button id="offLed" onclick="offLed()">off Led</button>
+           <a href="http://localhost:4000/devices/newDevice"><h2>Adicionar un nuevo dispositivo</h2></a>
+           <a href="http://localhost:4000/devicelist"><h2>Mostrar Dispositivos</h2></a>
+   
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="js/mqttCom.js"></script>
+    </body>
+</html>

@@ -1,0 +1,40 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+      <h1> Device List </h1>
+
+      <table class="table table-hover">
+        <thead class="text-warning">
+            <th>Device ID</th>
+            <th>Device name</th>
+            <th>Device Type</th>
+            <th></th>
+
+        </thead>
+        <a class="btn btn-info"
+            onclick="toastr.info('Hi! I am info message.');">Info message</a>
+        <% data.forEach(function(device) { %>
+        <tbody>
+            <tr>
+                <td><%=device.deviceID%></td>
+                <a href="http://localhost/device/"><td><%=device.deviceName%></td></a>
+                <td><%=device.deviceType%></td>
+                <td>
+                <form method="GET" action="/device">
+                     <button type="submit" name="edit"
+                            value="<%= device.deviceID %>" href="#"
+                            style="background-color: rgb(22, 136, 28)"
+                            class="btn btn-primary btn-round">Ver Dispositivo
+                        </button>
+                </form>
+            </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+
+    </body>
+</html>

@@ -1,0 +1,38 @@
+<html>
+
+<head>
+
+</head>
+
+<body>
+
+
+    <% data.forEach(function(device) { %>
+    <h1 style="display: inline">Device : </h1>
+    <h1 style="display: inline"><%=device.deviceName%></h1>
+    <% }) %>
+    <br>
+    <br>
+
+    <% data.forEach(function(device) { %>
+    <% if(device.deviceType == "Arduino"){ %>
+    <h1>Arduino</h1>
+
+    <button>Adicionar una salida</button>
+    <div id="input-output-ports">
+        <h2>Puertos E/S</h2>
+        <h2>Pin 13</h2>
+        <button id="onLed" onclick="onLed()">on Led</button>
+        <button id="offLed" onclick="offLed()">off Led</button>
+       
+    </div>
+
+    <% } else{ %>
+    <p>no es Arduino</p>
+    <% } %>
+    <% }) %>
+
+
+</body>
+
+</html>
