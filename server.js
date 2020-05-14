@@ -1,9 +1,13 @@
 const express = require('express');
+const session = require('express-session');
 require("dotenv").config();
 
 const app = express();
 var bodyParser = require('body-parser');
 const router = express.Router();
+app.use(session({
+  secret: 'ssshhhh'
+}));
 app.use(express.static('static'));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
