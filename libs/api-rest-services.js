@@ -3,10 +3,50 @@ const registerOrganoponic = require('../function/databaseManager/registerOrganop
 const superagent = require('superagent');
 const Device = require('../models/device');
 const Organoponic = require('../models/organoponic');
+const User = require('../models/user');
+
 var ObjectId = require('mongodb').ObjectId;
 module.exports = (router) => {
-    router.get("/", function (req, res) {
-        res.render("login", { tmp: 31 });
+    router.get('/', function (req, res) {
+        sess = req.session;
+        if (sess.email) {
+            res.render('crops',{userName:req.session.email});
+        } else {
+            res.redirect("authenticate");
+        }
+
+    });
+
+    router.get('/authenticate', (req, res) => {
+        res.render('login',{err_code : ''});
+    });
+   
+
+    router.get('/logOut', function (req, res) {
+        req.session.email = "";
+        res.redirect("authenticate");
+    });
+
+    router.post('/login', function (req, res) {
+        session = req.session;
+      //  console.log("Email",req.body.user.email);
+        const userEmail = req.body.user.email;
+        const userPassWord = req.body.user.password;
+        User.find({ userEmail: userEmail }, function (err, data) {
+           // res.render('userEmail', { data: data });
+           if (data.length == 0){
+            res.render('login',{ err_code: 'err_000' });
+           }
+           else if(data[0].userPassword != userPassWord){
+               console.log("password",userPassWord)
+            res.render('login',{ err_code: 'err_001' });
+           }
+           else if (data[0].userPassword == userPassWord){
+            session.email = userEmail;
+            res.redirect('/');
+           }
+
+        });
     });
     router.get("/home", function (req, res) {
         res.render("index", { tmp: 31 });
@@ -229,7 +269,14 @@ module.exports = (router) => {
         });
     });
     router.get('/crops', function (req, res) {
-        res.render('crops');
+
+        sess = req.session;
+        if (sess.email) {
+            res.render('crops',{userName:req.session.email});
+        } else {
+            res.redirect("authenticate");
+        }
+                
     });
 
     router.get('/device', function (req, res) {
