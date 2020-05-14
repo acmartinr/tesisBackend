@@ -1,25 +1,16 @@
-class User {
-    constructor(name, password, email) {
-        this._name = name;
-        this._password = password;
-        this._email = email;
-    }
-    getName() {
-        return this._name;
-    }
-    setName(name) {
-        this._name = name;
-    }
-    getPassword() {
-        return this._password;
-    }
-    setPassword(password) {
-        this._password = password;
-    }
-    getEmail() {
-        return this._email;
-    }
-    setEmail(email) {
-        this._email = email;
-    }
-}
+'use strict';
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const userSchema = mongoose.Schema({
+    userFirstName: String,
+    userLastName: String,
+    userAge: String,
+    userEmail: String,
+    userGender: String,
+    userPassword: String,
+    userImg: String,
+    created_at: String,
+});
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost:27017');
+module.exports = mongoose.model('users', userSchema);
