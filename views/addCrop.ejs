@@ -305,14 +305,11 @@
                         <input name='crop[name]' class="form-control" />
                     </div>
                     <div>
-                        <label  class="col-form-label">ID del Cultivo</label>
-                        <input  name='crop[id]' class="form-control" />
-                    </div>
-                    <div>
                             <label class="col-form-label">Tipo de cultivo</label>
                         <select id="selectDeviceType" onchange="test()" class="custom-select" name="crop[type]">
                             <option onclick="checkDevice('light')" value="tomate" selected>Tomate</option>
                             <option onclick="checkDevice('sensor')" value="rabano">Rabano</option>
+                            <option onclick="checkDevice('sensor')" value="frijol">Frijol</option>
                         </select>
                     </div>
                     <div>

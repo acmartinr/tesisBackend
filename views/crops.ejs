@@ -290,32 +290,32 @@
                 <!-- sales report area start -->
                 <div class="sales-report-area mt-5 mb-5">
                     <div class="row">
-
+                        <% data.forEach(function(crop) { %>
                         <div class="col-md-4">
                             <div class="single-report mb-xs-30">
                                 <div class="s-report-inner pr--20 pt--30 mb-3">
                                     <div class="icon" style="background-color: darkgreen;"><i class="fa fa-tree"></i></div>
                                     <div class="s-report-title d-flex justify-content-between">
-                                        <h4 class="header-title mb-0">Cultivo de Rabano</h4>
+                                        <h4 class="header-title mb-0"><%=crop.cropName%></h4>
                                         <p>24 H</p>
                                     </div>
                                     <div class="d-flex justify-content-between pb-2">
                                         <h2>Estado</h2>
-                                        <span style="color: red">offline</span>
+                                        <span id="span-state" style="color: red"><p style="color: red;" id="<%=crop._id%>">offline</p></span>
                                     </div>
                                     <div class="d-flex justify-content-between">
                                         <h2>Temperatura</h2>
-                                        <span>0 *C</span>
+                                        <span id ="tmpValue<%=crop._id%>">0 *C</span>
                                     </div>
                                     <div class="d-flex justify-content-between">
                                         <h2>Humedad</h2>
-                                        <span>0 %</span>
+                                        <span id ="humValue<%=crop._id%>">0 %</span>
                                     </div>
                                 </div>
                                 <canvas id="coin_sales1" height="100"></canvas>
                             </div>
                         </div>
-
+                        <% }) %>
 
 
                     </div>
@@ -525,6 +525,7 @@
     <script src="assets/js/vendor/jquery-2.2.4.min.js"></script>
     <!-- bootstrap 4 js -->
     <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/socket.io.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/owl.carousel.min.js"></script>
     <script src="assets/js/metisMenu.min.js"></script>
@@ -550,6 +551,47 @@
     <!-- others plugins -->
     <script src="assets/js/plugins.js"></script>
     <script src="assets/js/scripts.js"></script>
+
+<script>
+    //var socket=io('ws://' + window.location.hostname+ ':8000/');
+    var socket=io();
+    
+      //  socket.emit('send',"Hello Martin");
+        socket.on("deviceConnected",function(data){
+            if(data!=null){
+                console.log("Device: "+data+" is online");
+            var cropComponent = document.getElementById(data);
+            cropComponent.textContent = "online"
+            var spanState = document.getElementById('span-state');
+            cropComponent.style.color = 'green';
+            }
+        });
+        socket.on("deviceDisconnected",function(data){
+            if(data!=null){
+                console.log("Device: "+data+" is online");
+            var cropComponent = document.getElementById(data);
+            cropComponent.textContent = "offline"
+            var spanState = document.getElementById('span-state');
+            cropComponent.style.color = 'red';
+            }
+        });
+        socket.on("dataSend",function(data){
+            var obj = JSON.parse(data);
+            var cropComponent = document.getElementById("5ebcb16c6d41df335bbd7446");
+            cropComponent.textContent = "online"
+            var spanState = document.getElementById('span-state');
+            cropComponent.style.color = 'green';
+
+            console.log("Data sending... : "+obj.temp);
+                console.log("Data sending... : "+obj.hum);
+                var tempVal = document.getElementById("tmpValue5ebcb16c6d41df335bbd7446");
+                var humVal = document.getElementById("humValue5ebcb16c6d41df335bbd7446");
+                tempVal.textContent = obj.temp;
+                humVal.textContent = obj.hum;
+
+
+        });
+    </script>
 </body>
 
 </html>

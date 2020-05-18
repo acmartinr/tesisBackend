@@ -1,16 +1,20 @@
 const registerDevice = require('../function/databaseManager/registerDevice');
 const registerOrganoponic = require('../function/databaseManager/registerOrganoponic');
+const registerCrop = require('../function/databaseManager/registerCrop');
 const superagent = require('superagent');
 const Device = require('../models/device');
 const Organoponic = require('../models/organoponic');
 const User = require('../models/user');
-
+const Crop = require('../models/crop');
 var ObjectId = require('mongodb').ObjectId;
 module.exports = (router) => {
     router.get('/', function (req, res) {
         sess = req.session;
         if (sess.email) {
-            res.render('crops',{userName:req.session.email});
+            Crop.find({}, function (err, data) {
+                res.render('crops',{userName:req.session.email,data:data});
+            });
+            
         } else {
             res.redirect("authenticate");
         }
@@ -199,8 +203,6 @@ module.exports = (router) => {
     
     router.post('/registerNewCrop', function (req, res) {
         console.log("New Crop created")
-        
-        var cropID = req.body.crop.id;
         const cropName = req.body.crop.name;
         const cropType = req.body.crop.type;
         const cropLatitude = req.body.crop.latitude;
@@ -211,54 +213,15 @@ module.exports = (router) => {
         const cropMaxHum = req.body.crop.maxHum;
         const cropLum = req.body.crop.lum;
 
-        let json = {
-            "username": "albertocarlosmartin@gmail.com",
-            "password": "Martin18*"
-        }
+        //Register Organoponic in database
+        registerCrop.registerCrop(cropName,cropType,cropMaxTemp,cropMinTemp ,cropMaxHum,cropMinHum,cropLum,cropLatitude,cropLongitude)
+        .then(result => {
+            res.setHeader('Location', '/crop/' + cropID);
+            console.log("organoponic created");
+        })
+        .catch(err => res.status(409).json({ message: err.message }));
 
-        var req = superagent
-            .post('http://localhost:9090/api/auth/login')
-            .send(json) // sends a JSON post body
-            .set('Content-Type', 'application/json; charset=utf-8')
-            .set('Accept', 'application/json')
-            .then(res => {
-                return res.body.token;
-            }, err => {
-                if (err.timeout) {
-                    console.log("TimeOUT")
-                    return 0;
-                }
-                else {
-                    console.log("Other Error")
-                    return 1;
-                }
-            });
-        var req2 = req.then(resTb => {
-            let device = {
-                "name": cropName,
-                "type": cropType,
-                "latitude": cropLatitude,
-                "longitude": cropLongitude,
-                "maxTemp": cropMaxTemp,
-                "minTemp": cropMinTemp,
-                "maxHum": cropMaxHum,
-                "minHum": cropMinHum,
-                "lum": cropLum,
-                "idSerial":cropID
-            }
-            superagent
-                .post('http://localhost:9090/api/asset')
-                .send(device) // sends a JSON post body
-                .set('Content-Type', 'application/json; charset=utf-8')
-                .set('X-Authorization', 'Bearer ' + resTb)
-                .end((err, res1) => {
-                    //console.log(res);
-                    console.log(res1.text);
-                    res.redirect('/home');
-                    //   console.log(res);
-                });
-
-        });
+        res.redirect('/');
 
     });
     router.get('/devicelist', function (req, res) {
@@ -272,7 +235,10 @@ module.exports = (router) => {
 
         sess = req.session;
         if (sess.email) {
-            res.render('crops',{userName:req.session.email});
+            Crop.find({}, function (err, data) {
+                res.render('crops',{data:data,userName:sess.email});
+            });
+            
         } else {
             res.redirect("authenticate");
         }
